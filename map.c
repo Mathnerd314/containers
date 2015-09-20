@@ -16,10 +16,13 @@ void denysetgroups(pid_t pid) {
   int fd;
 
   path = string("/proc/%d/setgroups", pid);
-  if ((fd = open(path, O_WRONLY)) < 0)
-    error(1, 0, "Failed to disable setgroups() in container");
-  else if (write(fd, text, strlen(text)) != (ssize_t) strlen(text))
-    error(1, 0, "Failed to disable setgroups() in container");
+  if ((fd = open(path, O_WRONLY)) < 0) {
+    fprintf(stderr, "Failed to disable setgroups() in container");
+    return;
+  } else if (write(fd, text, strlen(text)) != (ssize_t) strlen(text)) {
+    fprintf(stderr, "Failed to disable setgroups() in container");
+    return;
+  }
   close(fd);
   free(path);
 }
